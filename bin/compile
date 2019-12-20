@@ -190,6 +190,10 @@ header "Installing binaries" | output "$LOG_FILE"
 install_bins | output "$LOG_FILE"
 
 restore_cache() {
+  # PIERRE: Nope
+  echo "SKIPPED"
+  return 0
+
   local cache_status cache_directories restore_cache_start_time
   restore_cache_start_time=$(nowms)
 
@@ -240,22 +244,23 @@ meta_set "build-step" "restore-cache"
 restore_cache | output "$LOG_FILE"
 
 build_dependencies() {
+  # PIERRE: Nope
+  echo "SKIPPED"
+  return 0
+
   local cache_status start
 
   cache_status="$(get_cache_status "$CACHE_DIR")"
   start=$(nowms)
 
-  # PIERRE: We don't want to install any dependencies when deploying,
-  # everything is in the repo.
-
-  # if $YARN; then
-    # yarn_node_modules "$BUILD_DIR"
-  # elif $PREBUILD; then
-    # echo "Prebuild detected (node_modules already exists)"
-    # npm_rebuild "$BUILD_DIR"
-  # else
-    # npm_node_modules "$BUILD_DIR"
-  # fi
+  if $YARN; then
+    yarn_node_modules "$BUILD_DIR"
+  elif $PREBUILD; then
+    echo "Prebuild detected (node_modules already exists)"
+    npm_rebuild "$BUILD_DIR"
+  else
+    npm_node_modules "$BUILD_DIR"
+  fi
 
   mtime "modules.time.cache.$cache_status" "${start}"
 
@@ -271,6 +276,10 @@ header "Installing dependencies" | output "$LOG_FILE"
 build_dependencies | output "$LOG_FILE"
 
 cache_build() {
+  # PIERRE: Nope
+  echo "SKIPPED"
+  return 0
+
   local cache_directories cache_build_start_time
   cache_build_start_time=$(nowms)
   cache_directories="$(get_cache_directories "$BUILD_DIR")"
@@ -292,12 +301,17 @@ cache_build() {
 }
 
 prune_devdependencies() {
+  # PIERRE: Nope
+  echo "SKIPPED"
+  return 0
+
   if $YARN; then
     yarn_prune_devdependencies "$BUILD_DIR"
   else
     npm_prune_devdependencies "$BUILD_DIR"
   fi
 }
+
 
 # if we are using yarn
 #   and in the new feature
